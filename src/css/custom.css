@@ -1,0 +1,121 @@
+@import url('https://fonts.googleapis.com/css?family=Montserrat|Permanent+Marker&display=swap');
+@import url('https://fonts.googleapis.com/css?family=Orbitron&display=swap');
+
+html,body{
+    font-family: 'Montserrat', sans-serif;
+    height: 100%;
+    position: relative;
+}
+
+h5{
+  color: #000000;
+}
+
+.main-container{
+    min-height: 100vh; /* will cover the 100% of viewport */
+    overflow: hidden;
+    display: block;
+    position: relative;
+    padding-bottom: 100px; /* height of your footer */
+}
+.react-inputs-validation__msg_identifier{
+    color: red !important; 
+}
+
+.navbar{
+    box-shadow: 0 2px 10px 0 rgba(0,0,0,0.09);
+    background: linear-gradient(46.28deg,#0b4baa,#021D44);
+    z-index: 100000 !important;
+}
+
+.nav-container{
+    padding-top:10px;
+    padding-bottom: 10px;
+}
+
+.navbar-toggler{
+    font-size: 12px;
+}
+
+.nav-link{
+    letter-spacing: 2px;
+    font-size: 0.7rem;
+    color: #5b6779 !important; 
+}
+.nav-link-selected{
+   
+    color: #021D44 !important; 
+    
+}
+
+.nav-link:hover{
+    color: #021D44 !important;
+}
+
+a{
+    color: #5b6779 !important; 
+}
+
+a:hover{
+    text-decoration: none !important;
+    }
+    
+    .logo{
+        max-height: 50px;
+    }
+    
+    .logo-text{
+        font-family: 'Orbitron' !important ;
+        position: relative;
+        font-size: 1.2rem;
+        color:#ffff;
+        letter-spacing: 8px;
+    }
+    
+    .no-text-decoration{
+        text-decoration: none !important;
+    }
+
+
+
+@media(min-width:576px){
+    .nav-link{
+        padding-left: 1rem !important;
+    }
+}
+
+ .btn-primary:focus, .btn-primary:active{
+    outline: none !important;
+    border: none !important;
+    box-shadow: none !important;
+}
+
+.btn-submit{
+    width: 250px !important;
+    max-width: 250px !important;
+}
+
+
+.home-content{
+    padding-top:86px;
+}
+.form-control:focus {
+    border-color: #021D44;
+    box-shadow: none;
+}
+
+a:focus,button:focus{
+    outline: none !important;
+    box-shadow: none !important;
+}
+
+.btn-primary{
+    background: #021D44;
+    background: linear-gradient(46.28deg,#0b4baa,#021D44);
+    color: white;
+    border: none !important;
+}
+
+.btn-primary:hover{
+    opacity: 0.9 !important;
+}
