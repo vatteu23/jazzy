@@ -15,7 +15,10 @@ class Index extends Component {
     }
 
     componentDidMount = () => {
-       
+        axios.get('http://127.0.0.1:5000/Brav/getdirectories')
+                .then(res=>{
+                    this.setState({ turbinelist : res.data["directories"]  })
+                })
 
     }  
     updateState = (e) => {
@@ -72,8 +75,6 @@ class Index extends Component {
         this.setState({end: val})
     }
     render() {
-        console.log(this.state)
-        console.log(this.state.date)
         return (
             <React.Fragment>
                 <div className="container">
@@ -84,15 +85,12 @@ class Index extends Component {
                             <select className="form-control" id="turbinename" 
                                 onChange={this.updateState} value={this.state.turbinename}>
                                   <option value="empty">SELECT TURBINE</option>
-                                  <option value="Turbine 50 Gearbox">Turbine 50 Gearbox</option>
-                                {/* {this.state.tglist &&
-                                    Object.keys(this.state.tglist.val()).map(id => {
-                                        let tg = this.state.tglist.val();
-                                        return (
-                                            <option key={id} value={id}>{tg[id]["tripgroup_name"]}</option>
-                                        )
-                                    })
-                                } */}
+                                  {this.state.turbinelist ? this.state.turbinelist.map(val =>{
+                                      return(
+                                        <option key={val} value={val}>{val}</option>
+                                      )
+                                  }):<option></option>}
+                                
                             </select>
                         </div>
                         <div className="col-6">

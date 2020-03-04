@@ -24,7 +24,7 @@ class Navbar extends Component {
                     <div className="container nav-container">
                         <Link className="brand" to="/">
 
-                            <h2 className="logo-text mb-0">JAZZY</h2>
+                            <h2 className="logo-text mb-0">BRAV</h2>
                         </Link>
 
 
