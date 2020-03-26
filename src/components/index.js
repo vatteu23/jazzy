@@ -2,77 +2,86 @@ import React, { Component } from "react";
 import axios from 'axios';
 import DateTimePicker from 'react-datetime-picker';
 import ReactAudioPlayer from 'react-audio-player';
+import Loading from '../loading.gif';
+
 
 class Index extends Component {
     constructor(props) {
         super(props);
         this.state = {
             date: new Date(),
-            isLoading: true,
+            isLoading: false,
             error: false,
-            errorMesssage: ''
+            showResult: false,
+            errorMesssage: '',
+            hostAddress: 'http://127.0.0.1:5000'
+
         }
     }
 
     componentDidMount = () => {
-        axios.get('http://127.0.0.1:5000/Brav/getdirectories')
-                .then(res=>{
-                    this.setState({ turbinelist : res.data["directories"]  })
-                })
+        axios.get(this.state.hostAddress + '/Brav/getdirectories')
+            .then(res => {
+                this.setState({ turbinelist: res.data["directories"] });
+            }).catch(err => {
+                alert('unable to get turbine list please try again');
+            })
 
-    }  
+    }
     updateState = (e) => {
-        this.setState({ [e.target.id] : e.target.value  })
-        
+        this.setState({ [e.target.id]: e.target.value })
+
     }
-    updateStart = (val) =>{
-        this.setState({start: val})
+    updateStart = (val) => {
+        this.setState({ start: val })
     }
 
-    getData = (e) =>{
+    getData = (e) => {
 
         let turbinename = this.state.turbinename;
-        let sd = new Date(this.state.start)
-        let ed = new Date(this.state.end)
-        
-        
-        let start = sd.toLocaleDateString('fr-CA').replace('-','').replace('-','').toString() + sd.toTimeString().split(' ')[0].replace(':','').replace(':','').toString();
-        let end = ed.toLocaleDateString('fr-CA').replace('-','').replace('-','').toString() + ed.toTimeString().split(' ')[0].replace(':','').replace(':','').toString();
-        this.setState({isLoading: true})
-        // console.log(turbinename)
-        if(sd >= ed)
-        {
-            this.setState({isLoading: true, error:true, errorMesssage:'Invalid time period.'})
+        let sd = new Date(this.state.start);
+        let ed = new Date(this.state.end);
+        let start = sd.toLocaleDateString('fr-CA').replace('-', '').replace('-', '').
+            toString() + sd.toTimeString().split(' ')[0].replace(':', '').replace(':', '').toString();
+        let end = ed.toLocaleDateString('fr-CA').replace('-', '').replace('-', '')
+            .toString() + ed.toTimeString().split(' ')[0].replace(':', '').replace(':', '').toString();
+        this.setState({ showResult: false, isLoading: true });
+        if (start === "Invalid DateInvalid" || end === "Invalid DateInvalid") {
+            this.setState({ showResult: false, isLoading: false, error: true, errorMesssage: 'Invalid Date' });
         }
-        else{
-            if(turbinename !== "empty" && turbinename)
-            {
-                axios.get('http://127.0.0.1:5000/Brav/getfiles/'+turbinename+'/'+start+'/'+end)
-                .then(res=>{
-                    if(res.data["Output"])
-                    {
-                        this.setState({isLoading: true, error:true, errorMesssage:'No files found in given time period and selected turbine.'})
-                        
-                    }else{
-                        this.setState({isLoading: false, error:false, audiosrc:'http://127.0.0.1:5000/Brav/getfiles/'+turbinename+'/'+start+'/'+end})
-                       
-                    }
-                })
+        else if (sd >= ed) {
+            this.setState({ showResult: false, isLoading: false, error: true, errorMesssage: 'Invalid time period.' });
+        }
+        else {
+            if (turbinename !== "empty" && turbinename) {
+                axios.get(this.state.hostAddress + '/Brav/getfiles/' + turbinename + '/' + start + '/' + end)
+                    .then(res => {
+                        if (res.data["Output"]) {
+                            this.setState({ showResult: false, isLoading: false, error: true, errorMesssage: 'No files found in given time period and selected turbine.' })
+
+                        } else {
+                            this.setState({ showResult: true, isLoading: false, error: false, audiosrc: this.state.hostAddress + '/Brav/getfiles/' + turbinename + '/' + start + '/' + end })
+
+                        }
+                    }).catch(err=>{
+                        console.log(err);
+                        this.setState({showResult:false,isLoading:false,error:true,errorMesssage:"Unable to get data, Please try again"});
+                    })
             }
-            else{
-                this.setState({isLoading: true, error:true, errorMesssage:'Please select a turbine from the dropdown.'})
+            else {
+                this.setState({ showResult: false, isLoading: false, error: true, errorMesssage: 'Please select a turbine from the dropdown.' })
             }
         }
 
-        
-        
-       
-       
+
+
+
+
     }
 
-    updateEnd = (val) =>{
-        
-        this.setState({end: val})
+    updateEnd = (val) => {
+
+        this.setState({ end: val })
     }
     render() {
         return (
@@ -82,15 +91,15 @@ class Index extends Component {
 
                     <div className="row">
                         <div className="col-12 mt-5 mb-3">
-                            <select className="form-control" id="turbinename" 
+                            <select className="form-control" id="turbinename"
                                 onChange={this.updateState} value={this.state.turbinename}>
-                                  <option value="empty">SELECT TURBINE</option>
-                                  {this.state.turbinelist ? this.state.turbinelist.map(val =>{
-                                      return(
+                                <option value="empty">SELECT TURBINE</option>
+                                {this.state.turbinelist ? this.state.turbinelist.map(val => {
+                                    return (
                                         <option key={val} value={val}>{val}</option>
-                                      )
-                                  }):<option></option>}
-                                
+                                    )
+                                }) : <option></option>}
+
                             </select>
                         </div>
                         <div className="col-6">
@@ -126,30 +135,38 @@ class Index extends Component {
                         </div>
                         <div className="col-12">
                             {
-                             
-                                !this.state.isLoading ? 
-                                <div>
+                                this.state.isLoading ?
+                                    <img style={{ height: '50px' }} src={Loading}></img>
+                                    : null
+                            }
+                            {
+
+                                this.state.showResult ?
+                                    <div>
+
+
                                         <ReactAudioPlayer
                                             src={this.state.audiosrc}
                                             autoPlay
                                             controls
                                         />
-                                </div>:
-                                <div></div>
+                                    </div> :
+                                    <div></div>
                             }
-                       
+
                         </div>
                         <div className="col-12">
                             {
-                                this.state.error ? 
-                                <div className="mt-5">
-                                    <h6>{this.state.errorMesssage}</h6>
-                                </div>:
-                                <div>
+                                this.state.error ?
+                                    <div className="mt-5">
+                                        <h6 style={{ color: 'red' }}>{this.state.errorMesssage}</h6>
+                                    </div> :
+                                    <div>
 
-                                </div>
-                                
+                                    </div>
+
                             }
+
                         </div>
                     </div>
                 </div>
